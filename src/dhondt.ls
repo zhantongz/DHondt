@@ -8,9 +8,16 @@ module.exports.compute = (partyArray, mandateCount, options = {}) ->
     if options.resultProperty then partyArray.forEach -> it[that] = 0
     while mandatesAwarded < mandateCount
         winningIndex = getRoundWinner votes, mandates, options
-        mandates[winningIndex]++
-        if options.resultProperty then partyArray[winningIndex][that]++
-        mandatesAwarded++
+        switch
+        | options.parties =>
+            if options.parties[partyArray[winningIndex].party] or mandates[winningIndex] < 1
+                mandates[winningIndex]++
+                if options.resultProperty then partyArray[winningIndex][that]++
+                mandatesAwarded++
+        | otherwise =>
+            mandates[winningIndex]++
+            if options.resultProperty then partyArray[winningIndex][that]++
+            mandatesAwarded++
 
     switch
     | options.resultProperty => partyArray
